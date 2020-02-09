@@ -1,14 +1,9 @@
 package com.oyvindmonsen;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.text.DecimalFormat;
-import java.util.ResourceBundle;
 
-import javafx.css.Match;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
@@ -20,16 +15,15 @@ import org.opencv.imgcodecs.Imgcodecs;
 
 public class EditorController {
 
-    @FXML
-    Slider opacitySlider;
+
     @FXML
     Slider brightnessSlider;
     @FXML
     Slider contrastSlider;
-
-
     @FXML
-    Label opacityValueLabel;
+    CheckBox colorCheckBox;
+
+
     @FXML
     Label brightnessValueLabel;
     @FXML
@@ -38,29 +32,29 @@ public class EditorController {
     @FXML
     ImageView imageView;
 
-    private Mat image;
-    private Mat adjustedImage;
+    private PhotoEditor editor;
 
 
     @FXML
     public void initialize() {
 
+        Mat image = new Mat();
+
         try {
             image = Imgcodecs.imread(getClass().getResource("shrek.jpg").getPath());
-            adjustedImage = image;
         } catch (Exception e) {
             System.out.println(e);
         }
+
+        this.editor = new PhotoEditor(image);
         showCurrentImage();
     }
 
 
-
     @FXML
-    void onOpacityValueChange() {
-        double opacity = opacitySlider.getValue();
-        opacityValueLabel.setText(String.format("%.1f", opacity) + "%");
-
+    void onColorCheckBoxChange() {
+        this.editor.setColor(colorCheckBox.isSelected());
+        this.showCurrentImage();
     }
 
     @FXML
@@ -80,7 +74,7 @@ public class EditorController {
     void onBrightnessSelected() {
         int brightness = (int) brightnessSlider.getValue();
 
-        this.adjustedImage = ImageAdjustments.setBrightness(image, brightness);
+        this.editor.setBrightness(brightness);
         this.showCurrentImage();
     }
 
@@ -88,7 +82,7 @@ public class EditorController {
     void onContrastSelected() {
         double contrast = contrastSlider.getValue();
 
-        this.adjustedImage = ImageAdjustments.setContrast(image, contrast);
+        this.editor.setContrast(contrast);
         this.showCurrentImage();
     }
 
@@ -96,7 +90,7 @@ public class EditorController {
 
     private void showCurrentImage() {
         MatOfByte buffer = new MatOfByte();
-        Imgcodecs.imencode(".png", adjustedImage, buffer);
+        Imgcodecs.imencode(".png", editor.getCurrentEdit(), buffer);
 
 
         Image displayImage = new Image(new ByteArrayInputStream(buffer.toArray()));
