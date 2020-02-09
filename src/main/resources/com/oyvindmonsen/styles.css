@@ -1,0 +1,24 @@
+.main {
+    -fx-background-color: #333333;
+}
+
+*{
+    -fx-text-fill: white;
+}
+.menu-item .label {
+    -fx-text-fill: black;
+}
+
+.split-pane-divider {
+    -fx-background-color: #666666;
+    -fx-padding: 1px;
+}
+
+.slider {
+
+}
+
+
+.second {
+    -fx-background-color: #444444;
+}
