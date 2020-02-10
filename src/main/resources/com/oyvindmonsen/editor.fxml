@@ -83,7 +83,7 @@
                   <MenuItem mnemonicParsing="false" text="Blur" />
               <MenuItem mnemonicParsing="false" text="Grayscale" />
                   <MenuItem mnemonicParsing="false" text="Blur" />
-                  <MenuItem mnemonicParsing="false" text="Shrek (?)" />
+                  <MenuItem mnemonicParsing="false" onAction="#onShrekSelected" text="Shrek (?)" />
             </items>
           </Menu>
         </menus>

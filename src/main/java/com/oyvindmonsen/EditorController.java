@@ -32,6 +32,8 @@ public class EditorController {
     @FXML
     ImageView imageView;
 
+
+
     private PhotoEditor editor;
 
 
@@ -41,7 +43,7 @@ public class EditorController {
         Mat image = new Mat();
 
         try {
-            image = Imgcodecs.imread(getClass().getResource("shrek.jpg").getPath());
+            image = Imgcodecs.imread(getClass().getResource("shrek.png").getPath());
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -86,11 +88,17 @@ public class EditorController {
         this.showCurrentImage();
     }
 
+    @FXML
+    void onShrekSelected() {
+        this.editor.shrekify();
+        showCurrentImage();
+    }
+
 
 
     private void showCurrentImage() {
         MatOfByte buffer = new MatOfByte();
-        Imgcodecs.imencode(".png", editor.getCurrentEdit(), buffer);
+        Imgcodecs.imencode(".png", editor.getAdjustedImage(), buffer);
 
 
         Image displayImage = new Image(new ByteArrayInputStream(buffer.toArray()));

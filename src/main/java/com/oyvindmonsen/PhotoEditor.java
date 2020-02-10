@@ -2,12 +2,14 @@ package com.oyvindmonsen;
 
 import org.opencv.core.Mat;
 
+import java.util.Stack;
+
 
 public class PhotoEditor {
 
     // Image
     private Mat image;
-    private Mat currentEdit;
+    private Mat adjustedImage;
 
     // Effects and adjustments
     private int brightness = 0;
@@ -19,12 +21,27 @@ public class PhotoEditor {
 
     private boolean isColorOn = true;
 
+    // State
+    private Stack<ImageState> history;
+
+    private Effects effects;
+
     public PhotoEditor(Mat image) {
         this.setImage(image);
+
+        this.effects = new Effects();
+
+        this.history = new Stack<ImageState>();
+        this.history.push(new ImageState(this.image, this.brightness, this.contrast, "Original"));
+
+    }
+
+    private void recordChange(String changeDesc) {
+        this.history.push(new ImageState(this.image, this.brightness, this.contrast, changeDesc));
     }
 
     private void updateContrastAndBrightness() {
-        this.setCurrentEdit(ImageAdjustments.setBrightnessAndContrast(this.image, this.brightness, this.contrast));
+        this.setAdjustedImage(ImageAdjustments.setBrightnessAndContrast(this.image, this.brightness, this.contrast));
     }
 
     public void setBrightness(int value) {
@@ -37,6 +54,11 @@ public class PhotoEditor {
         updateContrastAndBrightness();
     }
 
+    public void shrekify() {
+        this.image = effects.shrekify(image);
+        this.updateContrastAndBrightness();
+    }
+
 
     // Getters and setters
     public Mat getImage() {
@@ -45,20 +67,20 @@ public class PhotoEditor {
 
     public void setImage(Mat image) {
         this.image = image;
-        setCurrentEdit(image);
+        setAdjustedImage(image);
     }
 
-    public Mat getCurrentEdit() {
+    public Mat getAdjustedImage() {
         if (this.isColorOn) {
-            return currentEdit;
+            return adjustedImage;
         } else {
-            return ImageAdjustments.grayscale(this.currentEdit);
+            return ImageAdjustments.grayscale(this.adjustedImage);
         }
 
     }
 
-    public void setCurrentEdit(Mat currentEdit) {
-        this.currentEdit = currentEdit;
+    public void setAdjustedImage(Mat adjustedImage) {
+        this.adjustedImage = adjustedImage;
     }
 
     public boolean isColorOn() {
