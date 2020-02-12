@@ -9,6 +9,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.util.Callback;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
@@ -43,6 +46,11 @@ public class EditorController implements PropertyChangeListener {
     private ListView<ImageState> historyListView;
 
 
+    @FXML
+    private MenuItem undoBtn;
+
+    @FXML
+    MenuItem redoBtn;
 
     private ObservableList<ImageState> stateObservableList = FXCollections.observableArrayList();
 
@@ -63,6 +71,9 @@ public class EditorController implements PropertyChangeListener {
         this.editor = new PhotoEditor(this);
         editor.setImage(image);
 
+        // Shortcuts
+        undoBtn.setAccelerator(new KeyCodeCombination(KeyCode.Z, KeyCombination.SHORTCUT_DOWN));
+        redoBtn.setAccelerator(new KeyCodeCombination(KeyCode.Z, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN));
         this.historyListView.setCellFactory(new Callback<ListView<ImageState>, ListCell<ImageState>>() {
             @Override
             public ListCell<ImageState> call(ListView listView) {
@@ -129,7 +140,23 @@ public class EditorController implements PropertyChangeListener {
         System.out.println(historyListView.getSelectionModel().getSelectedItem().getDescription());
     }
 
+    @FXML
+    void undoPressed() {
+        this.editor.undo();
+        this.updateControls();
+    }
 
+    @FXML
+    void redoPressed() {
+        this.editor.redo();
+        this.updateControls();
+    }
+
+    private void updateControls() {
+        this.brightnessSlider.setValue(this.editor.getBrightness());
+        this.contrastSlider.setValue(this.editor.getContrast());
+        this.colorCheckBox.setSelected(this.editor.isColorOn());
+    }
 
     private void showCurrentImage() {
         MatOfByte buffer = new MatOfByte();

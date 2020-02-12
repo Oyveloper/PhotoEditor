@@ -78,6 +78,12 @@
               <MenuItem text="Save" />
             </items>
           </Menu>
+            <Menu mnemonicParsing="false" text="Edit">
+               <items>
+                  <MenuItem fx:id="undoBtn" onAction="#undoPressed" text="Undo" />
+                  <MenuItem fx:id="redoBtn" onAction="#redoPressed" text="Redo" />
+               </items>
+            </Menu>
           <Menu mnemonicParsing="false" text="Effects">
             <items>
                   <MenuItem mnemonicParsing="false" text="Blur" />

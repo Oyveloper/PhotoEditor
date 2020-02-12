@@ -16,13 +16,11 @@ public class PhotoEditor {
     // Effects and adjustments
     private int brightness = 0;
     private double contrast = 1;
-
-
-
     private boolean isColorOn = true;
 
     // State
     private Stack<ImageState> history;
+    private Stack<ImageState> undoStack;
 
     // Observer/observable
     private PropertyChangeSupport support;
@@ -39,13 +37,15 @@ public class PhotoEditor {
         this.addPropertyChangeListener(listener);
 
         this.history = new Stack<>();
+        this.undoStack = new Stack();
     }
 
 
     private void recordChange(String changeDesc) {
-        ImageState newState = new ImageState(this.image, this.brightness, this.contrast, changeDesc);
+        ImageState newState = new ImageState(this.image, this.adjustedImage, this.brightness, this.contrast, this.isColorOn, changeDesc);
 
         this.history.push(newState);
+        this.undoStack = (Stack<ImageState>) this.history.clone();
 
         this.support.firePropertyChange("New history", null, this.history);
     }
@@ -94,14 +94,68 @@ public class PhotoEditor {
 
     }
 
+    public int getBrightness() {
+        return brightness;
+    }
+
+    public double getContrast() {
+        return contrast;
+    }
+
+    public boolean isColorOn() {
+        return isColorOn;
+    }
+
+    public boolean canUndo() {
+        return this.history.size() > 1;
+    }
+
+    public boolean canRedo() {
+        return this.history.size() < this.undoStack.size();
+    }
+
+
+
     public void setAdjustedImage(Mat adjustedImage) {
         this.adjustedImage = adjustedImage;
+    }
+
+    private void updateFromImageState(ImageState state) {
+        this.image = state.getImage();
+        this.adjustedImage = state.getAdjustedImage();
+        this.contrast = state.getContrast();
+        this.brightness = state.getBrightness();
+        this.isColorOn = state.isColorOn();
     }
 
 
     public void setColor(boolean colorOn) {
         isColorOn = colorOn;
         this.recordChange("Color toggled");
+    }
+
+    public void undo() {
+        if (!this.canUndo()) {
+            return;
+        }
+        this.history.pop();
+        ImageState currentState = this.history.peek();
+        this.updateFromImageState(currentState);
+
+        this.support.firePropertyChange("Undo", null, this.history);
+    }
+
+    public void redo() {
+        if (!this.canRedo()) {
+            return;
+        }
+
+        this.history.push(this.undoStack.get(this.history.size()));
+        ImageState currentState = this.history.peek();
+        this.updateFromImageState(currentState);
+
+        this.support.firePropertyChange("Redo", null, this.history);
+
     }
 
 
