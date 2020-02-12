@@ -137,6 +137,7 @@ public class EditorController implements PropertyChangeListener {
     @FXML
     void historyCellSelected() {
         int index = historyListView.getSelectionModel().getSelectedIndex();
+        System.out.println(index);
         this.editor.undoToIndex(index);
     }
 

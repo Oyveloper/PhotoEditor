@@ -135,10 +135,12 @@ public class PhotoEditor {
     }
 
     public void undoToIndex(int index) {
-        if (index < this.history.size()) {
-            for (int i = 0; i < this.history.size(); i++) {
+        if (index < this.history.size()-1) {
+            int size = this.history.size()-1;
+            for (int i = index; i < size; i++) {
                 this.history.pop();
             }
+
 
             ImageState currentState = this.history.peek();
             this.updateFromImageState(currentState);
