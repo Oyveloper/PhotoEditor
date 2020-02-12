@@ -134,6 +134,19 @@ public class PhotoEditor {
         this.recordChange("Color toggled");
     }
 
+    public void undoToIndex(int index) {
+        if (index < this.history.size()) {
+            for (int i = 0; i < this.history.size(); i++) {
+                this.history.pop();
+            }
+
+            ImageState currentState = this.history.peek();
+            this.updateFromImageState(currentState);
+
+            this.support.firePropertyChange("Undo at index", null, this.history);
+        }
+    }
+
     public void undo() {
         if (!this.canUndo()) {
             return;
