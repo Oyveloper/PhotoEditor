@@ -1,9 +1,8 @@
-package com.oyvindmonsen;
+package com.oyvindmonsen.model;
 
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.objdetect.CascadeClassifier;
 
 import java.util.List;
 import java.util.Vector;
@@ -30,7 +29,6 @@ public class Effects {
 
 
             Mat roi = shrekImage.submat(face);
-            System.out.println(shrekFaceOverlay.size() + " " + mask.size());
             shrekFaceOverlay.copyTo(roi, mask);
         }
 

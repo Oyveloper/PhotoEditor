@@ -1,4 +1,4 @@
-package com.oyvindmonsen;
+package com.oyvindmonsen.model;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.CheckBox?>
+<?import com.jfoenix.controls.JFXSlider?>
+<?import com.jfoenix.controls.JFXToggleButton?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="641.0" prefWidth="892.0" styleClass="second" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.oyvindmonsen.EditorController">
+<AnchorPane prefHeight="641.0" prefWidth="892.0" styleClass="second" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.oyvindmonsen.controller.EditorController">
    <children>
       <SplitPane dividerPositions="0.7307692307692307" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="421.0" prefWidth="647.0" style="-fx-padding: 0;" stylesheets="@styles.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
         <items>
@@ -27,31 +27,31 @@
                     <items>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                            <children>
-                              <AnchorPane layoutX="5.0" layoutY="10.0" AnchorPane.topAnchor="60.0">
+                              <AnchorPane layoutX="5.0" layoutY="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="95.0">
                                  <children>
-                                    <AnchorPane>
+                                    <AnchorPane AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
                                        <children>
-                                          <Slider fx:id="brightnessSlider" layoutX="2.75" layoutY="20.0" max="150.0" min="-150.0" onMouseDragReleased="#onBrightnessSelected" onMouseDragged="#onBrightnessValueChange" onMouseReleased="#onBrightnessSelected" prefHeight="16.0" prefWidth="184.0" style="-fx-: black;" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="42.0" />
                                           <Label layoutX="7.75" text="Brightness" />
-                                          <Label fx:id="brightnessValueLabel" layoutX="193.25" layoutY="20.0" text="0" AnchorPane.rightAnchor="5.0" />
+                                          <Label fx:id="brightnessValueLabel" layoutX="214.0" layoutY="33.0" text="0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="33.0" />
+                                          <JFXSlider fx:id="brightnessSlider" layoutX="8.0" layoutY="21.0" max="255.0" min="-255.0" onMouseDragged="#onBrightnessValueChange" onMouseReleased="#onBrightnessSelected" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="35.0" />
                                        </children>
                                     </AnchorPane>
-                                    <AnchorPane layoutY="50.0">
+                                    <AnchorPane layoutY="50.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="70.0">
                                        <children>
-                                          <Slider fx:id="contrastSlider" layoutX="2.75" layoutY="20.0" max="3.0" onMouseDragged="#onContrastValueChange" onMouseReleased="#onContrastSelected" prefHeight="16.0" prefWidth="184.0" style="-fx-: black;" value="0.5" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="42.0" />
                                           <Label layoutX="7.75" text="Contrast" />
-                                          <Label fx:id="contrastValueLabel" layoutX="193.25" layoutY="20.0" text="0" AnchorPane.rightAnchor="5.0" />
+                                          <Label fx:id="contrastValueLabel" layoutX="215.0" layoutY="33.0" text="1" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="33.0" />
+                                          <JFXSlider fx:id="contrastSlider" layoutX="23.0" layoutY="15.0" max="3.0" onMouseDragged="#onContrastValueChange" onMouseReleased="#onContrastSelected" value="1.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="35.0" />
                                        </children>
                                     </AnchorPane>
                                  </children>
                               </AnchorPane>
                               <AnchorPane layoutX="14.0" layoutY="14.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
                                  <children>
-                                    <Label layoutY="5.0" text="Color" AnchorPane.leftAnchor="5.0" />
-                                    <CheckBox fx:id="colorCheckBox" layoutX="137.0" layoutY="5.0" mnemonicParsing="false" onAction="#onColorCheckBoxChange" selected="true" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0" />
+                                    <JFXToggleButton fx:id="colorCheckBox" alignment="CENTER_RIGHT" contentDisplay="GRAPHIC_ONLY" layoutX="8.0" layoutY="-16.0" onAction="#onColorCheckBoxChange" selected="true" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0" />
+                                    <Label layoutX="13.0" layoutY="22.0" text="Color" AnchorPane.leftAnchor="5.0" />
                                  </children>
                               </AnchorPane>
-                              <Separator layoutX="19.0" layoutY="49.0" prefWidth="200.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="50.0" />
+                              <Separator layoutX="19.0" layoutY="49.0" prefWidth="200.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="80.0" />
                            </children>
                         </AnchorPane>
                       <AnchorPane minHeight="0.0" minWidth="0.0" onMouseDragReleased="#onBrightnessSelected" prefHeight="100.0" prefWidth="160.0">
@@ -62,7 +62,7 @@
                                  </font>
                               </Label>
                               <Separator layoutX="19.0" layoutY="43.0" prefWidth="200.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="50.0" />
-                              <ListView layoutY="52.0" prefHeight="252.0" prefWidth="237.0" styleClass="second" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="55.0" />
+                              <ListView fx:id="historyListView" layoutY="52.0" onMouseClicked="#historyCellSelected" prefHeight="252.0" prefWidth="237.0" styleClass="second" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="55.0" />
                            </children>
                         </AnchorPane>
                     </items>
@@ -75,13 +75,11 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem text="Close" />
+              <MenuItem text="Save" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Effects">
             <items>
-                  <MenuItem mnemonicParsing="false" text="Blur" />
-              <MenuItem mnemonicParsing="false" text="Grayscale" />
                   <MenuItem mnemonicParsing="false" text="Blur" />
                   <MenuItem mnemonicParsing="false" onAction="#onShrekSelected" text="Shrek (?)" />
             </items>

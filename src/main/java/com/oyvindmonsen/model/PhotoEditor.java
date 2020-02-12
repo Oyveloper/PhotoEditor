@@ -1,7 +1,9 @@
-package com.oyvindmonsen;
+package com.oyvindmonsen.model;
 
 import org.opencv.core.Mat;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.Stack;
 
 
@@ -15,48 +17,60 @@ public class PhotoEditor {
     private int brightness = 0;
     private double contrast = 1;
 
-    private int red;
-    private int green;
-    private int blue;
+
 
     private boolean isColorOn = true;
 
     // State
     private Stack<ImageState> history;
 
+    // Observer/observable
+    private PropertyChangeSupport support;
+
+
     private Effects effects;
 
-    public PhotoEditor(Mat image) {
-        this.setImage(image);
 
+
+    public PhotoEditor(PropertyChangeListener listener) {
         this.effects = new Effects();
 
-        this.history = new Stack<ImageState>();
-        this.history.push(new ImageState(this.image, this.brightness, this.contrast, "Original"));
+        this.support = new PropertyChangeSupport(this);
+        this.addPropertyChangeListener(listener);
 
+        this.history = new Stack<>();
     }
 
+
     private void recordChange(String changeDesc) {
-        this.history.push(new ImageState(this.image, this.brightness, this.contrast, changeDesc));
+        ImageState newState = new ImageState(this.image, this.brightness, this.contrast, changeDesc);
+
+        this.history.push(newState);
+
+        this.support.firePropertyChange("New history", null, this.history);
     }
 
     private void updateContrastAndBrightness() {
         this.setAdjustedImage(ImageAdjustments.setBrightnessAndContrast(this.image, this.brightness, this.contrast));
+
     }
 
     public void setBrightness(int value) {
         this.brightness = value;
         updateContrastAndBrightness();
+        this.recordChange("Set brightness");
     }
 
     public void setContrast(double value) {
         this.contrast = value;
         updateContrastAndBrightness();
+        this.recordChange("Set contrast");
     }
 
     public void shrekify() {
         this.image = effects.shrekify(image);
         this.updateContrastAndBrightness();
+        this.recordChange("Shrekified");
     }
 
 
@@ -68,6 +82,7 @@ public class PhotoEditor {
     public void setImage(Mat image) {
         this.image = image;
         setAdjustedImage(image);
+        this.recordChange("Original");
     }
 
     public Mat getAdjustedImage() {
@@ -83,11 +98,16 @@ public class PhotoEditor {
         this.adjustedImage = adjustedImage;
     }
 
-    public boolean isColorOn() {
-        return isColorOn;
-    }
 
     public void setColor(boolean colorOn) {
         isColorOn = colorOn;
+        this.recordChange("Color toggled");
     }
+
+
+    //Update listeners
+    public void addPropertyChangeListener(PropertyChangeListener pcl) {
+        support.addPropertyChangeListener(pcl);
+    }
+
 }

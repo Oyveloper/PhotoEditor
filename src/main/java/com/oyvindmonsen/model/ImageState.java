@@ -1,4 +1,4 @@
-package com.oyvindmonsen;
+package com.oyvindmonsen.model;
 
 import org.opencv.core.Mat;
 
@@ -15,5 +15,9 @@ public class ImageState {
         this.brightness = brightness;
         this.contrast = contrast;
         this.description = description;
+    }
+
+    public String getDescription() {
+        return this.description;
     }
 }

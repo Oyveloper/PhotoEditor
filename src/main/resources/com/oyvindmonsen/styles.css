@@ -14,7 +14,37 @@
     -fx-padding: 1px;
 }
 
-.slider {
+.jfx-slider {
+    -jfx-default-track: #939f99;
+}
+
+.list-cell:even {
+    -fx-background-color: #444444;
+}
+
+.list-cell:odd {
+    -fx-background-color: #666666;
+}
+
+
+/* Styling the slider thumb */
+.jfx-slider > .thumb {
+    -fx-background-color: #009688;
+}
+
+/* Styling the filled track */
+.jfx-slider > .colored-track {
+    -fx-background-color: #77c2bb;
+}
+
+/* Styling the animated thumb */
+.jfx-slider > .animated-thumb {
+    -fx-background-color: transparent;
+}
+
+.jfx-slider .slider-value {
+    -fx-fill: transparent;
+    -fx-stroke: transparent;
 
 }
 
