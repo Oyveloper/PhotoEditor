@@ -2,7 +2,6 @@ package com.oyvindmonsen.controller;
 
 import com.oyvindmonsen.model.ImageState;
 import com.oyvindmonsen.model.PhotoEditor;
-import com.oyvindmonsen.view.HistoryListCell;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
