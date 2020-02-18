@@ -73,6 +73,12 @@ public class PhotoEditor {
         this.recordChange("Shrekified");
     }
 
+    public void applyBlur(double radius) {
+        this.image = effects.blur(image, radius);
+        this.updateContrastAndBrightness();
+        this.recordChange("Applied blur");
+    }
+
 
     // Getters and setters
     public Mat getImage() {

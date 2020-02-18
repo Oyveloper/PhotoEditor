@@ -34,4 +34,11 @@ public class Effects {
 
         return shrekImage;
     }
+
+    public Mat blur(Mat image, double radius) {
+        Mat bluredImage = image.clone();
+        Imgproc.GaussianBlur(image, bluredImage, new Size(0, 0), radius, 0);
+
+        return bluredImage;
+    }
 }

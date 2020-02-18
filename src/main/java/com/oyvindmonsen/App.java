@@ -6,7 +6,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URL;
 
 /**
  * JavaFX App
@@ -23,6 +28,7 @@ public class App extends Application {
 
         scene = new Scene(loadFXML("editor"));
         stage.setScene(scene);
+        stage.setTitle("Photo Editor");
         stage.show();
     }
 
@@ -36,6 +42,7 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
+
         launch();
     }
 

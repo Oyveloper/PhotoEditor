@@ -5,12 +5,17 @@ import com.oyvindmonsen.model.PhotoEditor;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
@@ -19,6 +24,7 @@ import org.opencv.imgcodecs.Imgcodecs;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.Stack;
 
 
@@ -40,6 +46,9 @@ public class EditorController implements PropertyChangeListener {
 
     @FXML
     private ImageView imageView;
+
+    @FXML
+    private AnchorPane imgContainer;
 
     @FXML
     private ListView<ImageState> historyListView;
@@ -69,6 +78,9 @@ public class EditorController implements PropertyChangeListener {
 
         this.editor = new PhotoEditor(this);
         editor.setImage(image);
+
+        //Scale image
+        imageView.fitWidthProperty().bind(imgContainer.widthProperty());
 
         // Shortcuts
         undoBtn.setAccelerator(new KeyCodeCombination(KeyCode.Z, KeyCombination.SHORTCUT_DOWN));
@@ -152,9 +164,16 @@ public class EditorController implements PropertyChangeListener {
         this.updateControls();
     }
 
+    @FXML
+    void blurPressed() {
+        showBlurSelect();
+    }
+
     private void updateControls() {
         this.brightnessSlider.setValue(this.editor.getBrightness());
+        this.brightnessValueLabel.setText(String.valueOf(this.editor.getBrightness()));
         this.contrastSlider.setValue(this.editor.getContrast());
+        this.contrastValueLabel.setText(String.valueOf(String.format("%.2f", this.editor.getContrast())));
         this.colorCheckBox.setSelected(this.editor.isColorOn());
     }
 
@@ -165,19 +184,45 @@ public class EditorController implements PropertyChangeListener {
 
         Image displayImage = new Image(new ByteArrayInputStream(buffer.toArray()));
         imageView.setImage(displayImage);
+
+        updateControls();
     }
 
     private void updateHistoryList(Stack<ImageState> history) {
         stateObservableList = FXCollections.observableArrayList();
         stateObservableList.addAll(history);
         historyListView.setItems(stateObservableList);
+        updateControls();
+    }
+
+    private void showBlurSelect() {
+        Parent root;
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("blurSelect.fxml"));
+            root = loader.load();
+            BlurSelectController blurSelectController = loader.getController();
+            blurSelectController.setListener(this);
+            Stage stage = new Stage();
+            stage.setTitle("Blur");
+            stage.setScene(new Scene(root));
+            stage.show();
+        }
+        catch (IOException e) {
+            System.out.println(e);;
+        }
     }
 
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        this.showCurrentImage();
-        updateHistoryList((Stack<ImageState>)evt.getNewValue());
+
+        if (evt.getSource() instanceof BlurSelectController) {
+            this.editor.applyBlur((double)evt.getNewValue());
+        } else {
+            this.showCurrentImage();
+            updateHistoryList((Stack<ImageState>)evt.getNewValue());
+        }
+
 
     }
 }
