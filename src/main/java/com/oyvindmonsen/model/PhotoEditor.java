@@ -38,7 +38,7 @@ public class PhotoEditor {
         this.addPropertyChangeListener(listener);
 
         this.history = new Stack<>();
-        this.undoStack = new Stack();
+        this.undoStack = new Stack<>();
     }
 
 
@@ -80,11 +80,6 @@ public class PhotoEditor {
         this.recordChange("Applied blur");
     }
 
-
-    // Getters and setters
-    public Mat getImage() {
-        return image;
-    }
 
     public void setImage(Mat image) {
         this.image = image;
@@ -128,7 +123,7 @@ public class PhotoEditor {
 
     public void setHistory(Stack<ImageState> history) {
         this.history = history;
-        this.undoStack = history;
+        this.undoStack = (Stack<ImageState>) this.history.clone();
         this.updateFromImageState(this.history.peek());
     }
     public void setAdjustedImage(Mat adjustedImage) {

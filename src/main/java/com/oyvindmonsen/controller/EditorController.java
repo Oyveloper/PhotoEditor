@@ -23,8 +23,6 @@ import javafx.util.Callback;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
@@ -71,6 +69,15 @@ public class EditorController implements PropertyChangeListener {
     @FXML
     private MenuItem openBtn;
 
+    @FXML
+    private MenuItem exportBtn;
+
+    @FXML
+    private MenuItem blurBtn;
+
+    @FXML
+    private MenuItem shrekifyBtn;
+
     private PhotoEditor editor;
 
     private PhotoEditorStateSaver saver = new GsonPhotoEditorStateSaver();
@@ -112,6 +119,9 @@ public class EditorController implements PropertyChangeListener {
         redoBtn.setAccelerator(new KeyCodeCombination(KeyCode.Z, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN));
         saveBtn.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN));
         openBtn.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.SHORTCUT_DOWN));
+        exportBtn.setAccelerator(new KeyCodeCombination(KeyCode.E, KeyCombination.SHORTCUT_DOWN));
+        blurBtn.setAccelerator(new KeyCodeCombination(KeyCode.B, KeyCombination.SHORTCUT_DOWN));
+        shrekifyBtn.setAccelerator(new KeyCodeCombination(KeyCode.A, KeyCombination.SHORTCUT_DOWN));
     }
 
 
@@ -201,6 +211,18 @@ public class EditorController implements PropertyChangeListener {
 
     }
 
+    @FXML
+    void exportPNG() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choose where to save your file");
+
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG", "*.png"));
+        File file = fileChooser.showSaveDialog(new Stage());
+        String path = file.getAbsolutePath();
+
+        Imgcodecs.imwrite(path, this.editor.getAdjustedImage());
+    }
+
     private void openFile() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose file to open");
@@ -230,8 +252,6 @@ public class EditorController implements PropertyChangeListener {
                 e.printStackTrace();
             }
         }
-
-
     }
 
     private void updateControls() {
@@ -272,8 +292,7 @@ public class EditorController implements PropertyChangeListener {
             stage.setScene(new Scene(root));
             stage.show();
         }
-        catch (IOException e) {
-            System.err.println(e);
+        catch (IOException ignored) {
         }
     }
 

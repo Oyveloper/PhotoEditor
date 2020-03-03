@@ -77,7 +77,7 @@
             <items>
               <MenuItem fx:id="saveBtn" onAction="#savePressed" text="Save" />
                   <MenuItem fx:id="openBtn" onAction="#openPressed" text="Open file" />
-                  <MenuItem text="Export png" />
+                  <MenuItem fx:id="exportBtn" onAction="#exportPNG" text="Export png" />
             </items>
           </Menu>
             <Menu mnemonicParsing="false" text="Edit">
@@ -88,8 +88,8 @@
             </Menu>
           <Menu mnemonicParsing="false" text="Effects">
             <items>
-                  <MenuItem mnemonicParsing="false" onAction="#blurPressed" text="Blur" />
-                  <MenuItem mnemonicParsing="false" onAction="#onShrekSelected" text="Shrekfiy" />
+                  <MenuItem fx:id="blurBtn" mnemonicParsing="false" onAction="#blurPressed" text="Blur" />
+                  <MenuItem fx:id="shrekifyBtn" mnemonicParsing="false" onAction="#onShrekSelected" text="Shrekfiy" />
             </items>
           </Menu>
         </menus>

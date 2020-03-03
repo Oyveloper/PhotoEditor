@@ -16,12 +16,14 @@ public class Effects {
         Mat shrekImage = Mat.zeros(image.size(), image.type());
         image.copyTo(shrekImage);
         List<Rect> faces = faceDetector.findFaces(image);
-        Mat shrekFace = Imgcodecs.imread(getClass().getResource("shrek_face.png").getPath(), Imgcodecs.IMREAD_UNCHANGED);
+
 
         for (Rect face : faces) {
+            String shrekFaceFileName = "shrek_face" + (int)((((Math.random() * 10) % 4)+1)) + ".png";
+            Mat shrekFace = Imgcodecs.imread(getClass().getResource(shrekFaceFileName).getPath(), Imgcodecs.IMREAD_UNCHANGED);
             Mat shrekFaceOverlay = shrekFace.clone();
             Imgproc.resize(shrekFaceOverlay, shrekFaceOverlay, new Size(face.width, face.height));
-            Vector<Mat> rgba = new Vector<Mat>();
+            Vector<Mat> rgba = new Vector<>();
             Core.split(shrekFaceOverlay, rgba);
             Mat mask = rgba.get(3);
             rgba.remove(rgba.size()-1);
