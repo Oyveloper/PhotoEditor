@@ -23,6 +23,7 @@ import javafx.util.Callback;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -78,16 +79,8 @@ public class EditorController implements PropertyChangeListener {
     @FXML
     public void initialize() {
 
-        Mat image = new Mat();
-
-        try {
-            image = Imgcodecs.imread(getClass().getResource("selfie.jpeg").getPath());
-        } catch (Exception e) {
-            System.out.println("Kunne ikke åpne bildet...");
-        }
-
         this.editor = new PhotoEditor(this);
-        editor.setImage(image);
+        openFile();
 
         //Scale image
         imageView.fitWidthProperty().bind(imgContainer.widthProperty());
@@ -203,20 +196,41 @@ public class EditorController implements PropertyChangeListener {
 
     @FXML
     void openPressed() {
+
+        openFile();
+
+    }
+
+    private void openFile() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose file to open");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PhotoEditor files", "*.pedit"));
+
+        FileChooser.ExtensionFilter peditFilter = new FileChooser.ExtensionFilter("PhotoEditor files", "*.pedit");
+        FileChooser.ExtensionFilter imageFilter = new FileChooser.ExtensionFilter("Images", "*.png", "*.jpeg", "*.JPEG", "*.JPG", "*.jpg");
+        fileChooser.getExtensionFilters().add(peditFilter);
+        fileChooser.getExtensionFilters().add(imageFilter);
         File file = fileChooser.showOpenDialog(new Stage());
 
-        try {
-            Stack<ImageState> history = this.saver.getStateFromFile(file.getAbsolutePath());
-            this.editor.setHistory(history);
-            this.showCurrentImage();
-            this.updateControls();
-            this.updateHistoryList(this.editor.getHistory());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        if (fileChooser.getSelectedExtensionFilter() == imageFilter) {
+            try {
+                Mat image = Imgcodecs.imread(file.getAbsolutePath());
+                this.editor = new PhotoEditor(this);
+                editor.setImage(image);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                Stack<ImageState> history = this.saver.getStateFromFile(file.getAbsolutePath());
+                this.editor.setHistory(history);
+                this.showCurrentImage();
+                this.updateControls();
+                this.updateHistoryList(this.editor.getHistory());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
+
 
     }
 
