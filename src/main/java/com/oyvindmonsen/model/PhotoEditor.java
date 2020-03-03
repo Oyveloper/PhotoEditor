@@ -1,5 +1,6 @@
 package com.oyvindmonsen.model;
 
+import com.google.gson.annotations.Expose;
 import org.opencv.core.Mat;
 
 import java.beans.PropertyChangeListener;
@@ -22,7 +23,7 @@ public class PhotoEditor {
     private Stack<ImageState> history;
     private Stack<ImageState> undoStack;
 
-    // Observer/observable
+    @Expose(serialize = false, deserialize = false)
     private PropertyChangeSupport support;
 
 
@@ -120,8 +121,16 @@ public class PhotoEditor {
         return this.history.size() < this.undoStack.size();
     }
 
+    public Stack<ImageState> getHistory() {
+        return this.history;
+    }
 
 
+    public void setHistory(Stack<ImageState> history) {
+        this.history = history;
+        this.undoStack = history;
+        this.updateFromImageState(this.history.peek());
+    }
     public void setAdjustedImage(Mat adjustedImage) {
         this.adjustedImage = adjustedImage;
     }
@@ -132,6 +141,7 @@ public class PhotoEditor {
         this.contrast = state.getContrast();
         this.brightness = state.getBrightness();
         this.isColorOn = state.isColorOn();
+
     }
 
 

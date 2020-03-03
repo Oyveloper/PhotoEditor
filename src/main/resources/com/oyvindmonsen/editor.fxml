@@ -75,7 +75,9 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem text="Save" />
+              <MenuItem fx:id="saveBtn" onAction="#savePressed" text="Save" />
+                  <MenuItem fx:id="openBtn" onAction="#openPressed" text="Open file" />
+                  <MenuItem text="Export png" />
             </items>
           </Menu>
             <Menu mnemonicParsing="false" text="Edit">

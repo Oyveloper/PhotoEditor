@@ -1,7 +1,9 @@
 package com.oyvindmonsen.controller;
 
+import com.oyvindmonsen.model.GsonPhotoEditorStateSaver;
 import com.oyvindmonsen.model.ImageState;
 import com.oyvindmonsen.model.PhotoEditor;
+import com.oyvindmonsen.model.PhotoEditorStateSaver;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -15,6 +17,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.opencv.core.Mat;
@@ -24,12 +27,13 @@ import org.opencv.imgcodecs.Imgcodecs;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Stack;
 
 
 public class EditorController implements PropertyChangeListener {
-
 
     @FXML
     private Slider brightnessSlider;
@@ -58,11 +62,17 @@ public class EditorController implements PropertyChangeListener {
     private MenuItem undoBtn;
 
     @FXML
-    MenuItem redoBtn;
+    private MenuItem redoBtn;
 
-    private ObservableList<ImageState> stateObservableList = FXCollections.observableArrayList();
+    @FXML
+    private MenuItem saveBtn;
+
+    @FXML
+    private MenuItem openBtn;
 
     private PhotoEditor editor;
+
+    private PhotoEditorStateSaver saver = new GsonPhotoEditorStateSaver();
 
 
     @FXML
@@ -81,14 +91,13 @@ public class EditorController implements PropertyChangeListener {
 
         //Scale image
         imageView.fitWidthProperty().bind(imgContainer.widthProperty());
+        setupShortcuts();
 
-        // Shortcuts
-        undoBtn.setAccelerator(new KeyCodeCombination(KeyCode.Z, KeyCombination.SHORTCUT_DOWN));
-        redoBtn.setAccelerator(new KeyCodeCombination(KeyCode.Z, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN));
-        this.historyListView.setCellFactory(new Callback<ListView<ImageState>, ListCell<ImageState>>() {
+        this.historyListView.setCellFactory(new Callback<>() {
             @Override
             public ListCell<ImageState> call(ListView listView) {
-                ListCell<ImageState> cell = new ListCell<ImageState>() {
+
+                return new ListCell<>() {
                     @Override
                     protected void updateItem(ImageState state, boolean empty) {
                         super.updateItem(state, empty);
@@ -100,10 +109,16 @@ public class EditorController implements PropertyChangeListener {
                         }
                     }
                 };
-
-                return cell;
             }
         });
+    }
+
+    private void setupShortcuts() {
+        // Shortcuts
+        undoBtn.setAccelerator(new KeyCodeCombination(KeyCode.Z, KeyCombination.SHORTCUT_DOWN));
+        redoBtn.setAccelerator(new KeyCodeCombination(KeyCode.Z, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN));
+        saveBtn.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN));
+        openBtn.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.SHORTCUT_DOWN));
     }
 
 
@@ -169,6 +184,42 @@ public class EditorController implements PropertyChangeListener {
         showBlurSelect();
     }
 
+    @FXML
+    void savePressed() {
+        FileChooser fileChooser = new FileChooser();
+
+        fileChooser.setTitle("Open Resource File");
+
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PhotoEditor files", "*.pedit"));
+        File file = fileChooser.showSaveDialog(new Stage());
+        String path = file.getAbsolutePath();
+
+        try {
+            this.saver.writeToFile(this.editor, path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void openPressed() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choose file to open");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PhotoEditor files", "*.pedit"));
+        File file = fileChooser.showOpenDialog(new Stage());
+
+        try {
+            Stack<ImageState> history = this.saver.getStateFromFile(file.getAbsolutePath());
+            this.editor.setHistory(history);
+            this.showCurrentImage();
+            this.updateControls();
+            this.updateHistoryList(this.editor.getHistory());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     private void updateControls() {
         this.brightnessSlider.setValue(this.editor.getBrightness());
         this.brightnessValueLabel.setText(String.valueOf(this.editor.getBrightness()));
@@ -189,7 +240,7 @@ public class EditorController implements PropertyChangeListener {
     }
 
     private void updateHistoryList(Stack<ImageState> history) {
-        stateObservableList = FXCollections.observableArrayList();
+        ObservableList<ImageState> stateObservableList = FXCollections.observableArrayList();
         stateObservableList.addAll(history);
         historyListView.setItems(stateObservableList);
         updateControls();
@@ -208,7 +259,7 @@ public class EditorController implements PropertyChangeListener {
             stage.show();
         }
         catch (IOException e) {
-            System.out.println(e);;
+            System.err.println(e);
         }
     }
 
