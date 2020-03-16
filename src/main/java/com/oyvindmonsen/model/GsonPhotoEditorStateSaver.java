@@ -6,7 +6,6 @@ import com.google.gson.reflect.TypeToken;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -18,7 +17,7 @@ public class GsonPhotoEditorStateSaver implements PhotoEditorStateSaver {
     private Gson gson;
     private Type historyType = new TypeToken<Stack<ImageState>>() {}.getType();
 
-    private class imageSerializer implements JsonSerializer<Mat> {
+    private class ImageSerializer implements JsonSerializer<Mat> {
 
         @Override
         public JsonElement serialize(Mat src, Type typeOfSrc, JsonSerializationContext context) {
@@ -32,7 +31,7 @@ public class GsonPhotoEditorStateSaver implements PhotoEditorStateSaver {
         }
     }
 
-    private class imageDeserializer implements JsonDeserializer<Mat> {
+    private class ImageDeserializer implements JsonDeserializer<Mat> {
 
         @Override
         public Mat deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
@@ -45,8 +44,8 @@ public class GsonPhotoEditorStateSaver implements PhotoEditorStateSaver {
     public GsonPhotoEditorStateSaver() {
         GsonBuilder gsonBuilder = new GsonBuilder();
 
-        gsonBuilder.registerTypeAdapter(Mat.class, new imageSerializer());
-        gsonBuilder.registerTypeAdapter(Mat.class, new imageDeserializer());
+        gsonBuilder.registerTypeAdapter(Mat.class, new ImageSerializer());
+        gsonBuilder.registerTypeAdapter(Mat.class, new ImageDeserializer());
 
         this.gson = gsonBuilder.create();
     }

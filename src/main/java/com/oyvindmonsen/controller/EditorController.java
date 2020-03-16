@@ -166,7 +166,6 @@ public class EditorController implements PropertyChangeListener {
     @FXML
     void historyCellSelected() {
         int index = historyListView.getSelectionModel().getSelectedIndex();
-        System.out.println(index);
         this.editor.undoToIndex(index);
     }
 
@@ -195,6 +194,10 @@ public class EditorController implements PropertyChangeListener {
 
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PhotoEditor files", "*.pedit"));
         File file = fileChooser.showSaveDialog(new Stage());
+        if (file == null) {
+            // user has abandoned
+            return;
+        }
         String path = file.getAbsolutePath();
 
         try {
@@ -216,8 +219,14 @@ public class EditorController implements PropertyChangeListener {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose where to save your file");
 
+        System.out.println("About to export some shit");
+
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG", "*.png"));
         File file = fileChooser.showSaveDialog(new Stage());
+        if (file == null) {
+            // USer has abanoded
+            return;
+        }
         String path = file.getAbsolutePath();
 
         Imgcodecs.imwrite(path, this.editor.getAdjustedImage());
@@ -228,10 +237,15 @@ public class EditorController implements PropertyChangeListener {
         fileChooser.setTitle("Choose file to open");
 
         FileChooser.ExtensionFilter peditFilter = new FileChooser.ExtensionFilter("PhotoEditor files", "*.pedit");
-        FileChooser.ExtensionFilter imageFilter = new FileChooser.ExtensionFilter("Images", "*.png", "*.jpeg", "*.JPEG", "*.JPG", "*.jpg");
+        FileChooser.ExtensionFilter imageFilter = new FileChooser.ExtensionFilter("Images", "*.png", "*.jpeg", "*.JPEG", "*.JPG", "*.jpg", "*.pedit");
         fileChooser.getExtensionFilters().add(peditFilter);
         fileChooser.getExtensionFilters().add(imageFilter);
         File file = fileChooser.showOpenDialog(new Stage());
+
+        if (file == null) {
+            // User has abandoned;
+            return;
+        }
 
         if (fileChooser.getSelectedExtensionFilter() == imageFilter) {
             try {
@@ -239,7 +253,7 @@ public class EditorController implements PropertyChangeListener {
                 this.editor = new PhotoEditor(this);
                 editor.setImage(image);
             } catch (Exception e) {
-                e.printStackTrace();
+                this.showErrorMessage(e.getMessage());
             }
         } else {
             try {
@@ -249,9 +263,18 @@ public class EditorController implements PropertyChangeListener {
                 this.updateControls();
                 this.updateHistoryList(this.editor.getHistory());
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                this.showErrorMessage(e.getMessage());
             }
         }
+    }
+
+    private void showErrorMessage(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText("Error: Something went wrong");
+        alert.setContentText(message);
+        alert.setTitle("Error");
+
+        alert.showAndWait();
     }
 
     private void updateControls() {
