@@ -31,11 +31,10 @@ public class PhotoEditor {
 
 
 
-    public PhotoEditor(PropertyChangeListener listener) {
+    public PhotoEditor() {
         this.effects = new Effects();
 
         this.support = new PropertyChangeSupport(this);
-        this.addPropertyChangeListener(listener);
 
         this.history = new Stack<>();
         this.undoStack = new Stack<>();

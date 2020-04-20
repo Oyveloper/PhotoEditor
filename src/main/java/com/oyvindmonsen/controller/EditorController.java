@@ -80,13 +80,14 @@ public class EditorController implements PropertyChangeListener {
 
     private PhotoEditor editor;
 
-    private PhotoEditorStateSaver saver = new GsonPhotoEditorStateSaver();
+    private final PhotoEditorStateSaver saver = new GsonPhotoEditorStateSaver();
 
 
     @FXML
     public void initialize() {
 
-        this.editor = new PhotoEditor(this);
+        this.editor = new PhotoEditor();
+        this.editor.addPropertyChangeListener(this);
         openFile();
 
         //Scale image
@@ -250,7 +251,8 @@ public class EditorController implements PropertyChangeListener {
         if (fileChooser.getSelectedExtensionFilter() == imageFilter) {
             try {
                 Mat image = Imgcodecs.imread(file.getAbsolutePath());
-                this.editor = new PhotoEditor(this);
+                this.editor = new PhotoEditor();
+                this.editor.addPropertyChangeListener(this);
                 editor.setImage(image);
             } catch (Exception e) {
                 this.showErrorMessage(e.getMessage());
