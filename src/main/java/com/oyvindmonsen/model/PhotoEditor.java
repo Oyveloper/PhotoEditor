@@ -24,10 +24,10 @@ public class PhotoEditor {
     private Stack<ImageState> undoStack;
 
     @Expose(serialize = false, deserialize = false)
-    private PropertyChangeSupport support;
+    private final PropertyChangeSupport support;
 
 
-    private Effects effects;
+    private final Effects effects;
 
 
 

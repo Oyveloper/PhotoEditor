@@ -20,7 +20,9 @@ public class FaceDetector {
 
     public List<Rect> findFaces(Mat image) {
         Mat result = image;
-        Mat gray = ImageAdjustments.grayscale(image);
+        Mat gray = image.clone();
+        Imgproc.cvtColor(image, gray, Imgproc.COLOR_RGB2GRAY);//ImageAdjustments.grayscale(image);
+
         Imgproc.equalizeHist(gray, gray);
 
         // -- Detect faces

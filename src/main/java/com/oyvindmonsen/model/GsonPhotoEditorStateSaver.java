@@ -14,10 +14,10 @@ import java.util.Stack;
 
 public class GsonPhotoEditorStateSaver implements PhotoEditorStateSaver {
 
-    private Gson gson;
-    private Type historyType = new TypeToken<Stack<ImageState>>() {}.getType();
+    private final Gson gson;
+    private final Type historyType = new TypeToken<Stack<ImageState>>() {}.getType();
 
-    private class ImageSerializer implements JsonSerializer<Mat> {
+    private static class ImageSerializer implements JsonSerializer<Mat> {
 
         @Override
         public JsonElement serialize(Mat src, Type typeOfSrc, JsonSerializationContext context) {
@@ -31,7 +31,7 @@ public class GsonPhotoEditorStateSaver implements PhotoEditorStateSaver {
         }
     }
 
-    private class ImageDeserializer implements JsonDeserializer<Mat> {
+    private static class ImageDeserializer implements JsonDeserializer<Mat> {
 
         @Override
         public Mat deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
